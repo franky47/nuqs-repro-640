@@ -1,10 +1,11 @@
+import { type GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-
 import { useQueryState } from 'nuqs'
 
-export default function Home() {
+export default function Home({ serverSearch }: { serverSearch: string }) {
   const [search, setSearch] = useQueryState('search', {
     defaultValue: '',
+    shallow: false,
     clearOnDefault: true,
   })
   return (
@@ -20,6 +21,19 @@ export default function Home() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+      <p>
+        Server search: {serverSearch}
+        <br />
+        Client search: {search}
+      </p>
     </>
   )
+}
+
+export function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return {
+    props: {
+      serverSearch: ctx.query.search || '',
+    },
+  }
 }
